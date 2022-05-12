@@ -50,9 +50,11 @@ export const AppBar: FC = props => {
 
         {/* Wallet & Settings */}
         <div className="navbar-end">
+          <WalletMultiButton />
         </div>
       </div>
       {props.children}
     </div>
   );
 };
+

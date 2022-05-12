@@ -1,3 +1,4 @@
+import WalletContextProvider from 'contexts/WalletContextProvider';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { FC } from 'react';
@@ -14,11 +15,13 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
             <title>Solana Scaffold Lite</title>
           </Head>
 
+          <WalletContextProvider>
             <div className="flex flex-col h-screen">
               <Notifications />
               <AppBar/>
                 <Component {...pageProps} />
             </div>
+          </WalletContextProvider>
         </>
     );
 };
