@@ -7,19 +7,26 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 // Components
 import pkg from '../../../package.json';
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 // Store
 
 export const HomeView: FC = ({ }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
+  const [balance, setBalance] = useState(0);
 
+  const getUserSOLBalance = async (publicKey: PublicKey, connection: Connection) => {
+    let balance = await connection.getBalance(publicKey);
+    setBalance(balance / LAMPORTS_PER_SOL);
+  }
 
   useEffect(() => {
     if (wallet.publicKey) {
       console.log(wallet.publicKey.toBase58())
+      getUserSOLBalance(wallet.publicKey, connection)
     }
-  }, [wallet.publicKey, connection])
+  }, [wallet.publicKey, connection, getUserSOLBalance])
 
   return (
 
@@ -37,6 +44,11 @@ export const HomeView: FC = ({ }) => {
             <code className="truncate">Start building on Solana  </code>
           </pre>
         </div>        
+        <div className="text-center">
+          {/* <RequestAirdrop /> */}
+          {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>}
+          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
+        </div>
       </div>
     </div>
   );
