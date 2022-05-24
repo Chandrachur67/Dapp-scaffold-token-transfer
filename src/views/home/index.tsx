@@ -8,6 +8,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 // Components
 import pkg from '../../../package.json';
 import { RequestAirdrop } from '../../components/RequestAirdrop';
+import { SendTransaction } from '../../components/SendTransaction';
 
 // Store
 import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
@@ -47,6 +48,7 @@ export const HomeView: FC = ({ }) => {
           <RequestAirdrop />
           {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>}
           {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
+          <SendTransaction />
         </div>
       </div>
     </div>
