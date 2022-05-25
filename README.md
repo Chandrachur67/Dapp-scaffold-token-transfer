@@ -1,3 +1,8 @@
+# About This Fork
+- This is the companion code for the [walkthrough](https://solana.com/news/solana-scaffold-part-1-wallet-adapter/)
+- Original Code from [DonnySolana](https://github.com/DonnySolana)
+
+---
 
 # Solana dApp Scaffold Next
 
