@@ -2,13 +2,16 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import { notify } from "../utils/notifications";
-import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, TransactionSignature } from '@solana/web3.js';
-import { clusterApiUrl, Connection, GetProgramAccountsFilter } from "@solana/web3.js";
+import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, TransactionSignature, clusterApiUrl, Connection, GetProgramAccountsFilter } from '@solana/web3.js';
+import { } from "@solana/web3.js";
+import { Metaplex, keypairIdentity, bundlrStorage, token } from "@metaplex-foundation/js";
 import { createTransferInstruction, getOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata';
 import 'reflect-metadata'
 
 const solanaConnection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+
+const metaplex = Metaplex.make(solanaConnection);
 
 export const SendTransaction: FC = () => {
 
@@ -53,7 +56,7 @@ export const SendTransaction: FC = () => {
     const [tokenAccounts, setTokenAccounts] = useState([]);
     const [formData, setFormData] = useState({
         recipientAdress: "",
-        amount: 0,
+        amount: 1,
         selectedTokenAccount: ""
     })
 
@@ -82,21 +85,47 @@ export const SendTransaction: FC = () => {
                     { filters: filters }
                 );
 
-                const allTokenAccounts = accounts.map(account => {
+
+                accounts.forEach(async account => {
+
                     const parsedAccountInfo: any = account.account.data;
                     const tokenAccountNo = account.pubkey.toString();
                     const mintAddress = parsedAccountInfo["parsed"]["info"]["mint"];
                     const tokenBalance = parsedAccountInfo["parsed"]["info"]["tokenAmount"]["uiAmount"];
 
-                    return {
-                        tokenAccountNo: tokenAccountNo,
-                        mintAddress: mintAddress,
-                        tokenBalance: tokenBalance,
+                    // console.log("-----------------------------------")
+                    // console.log(mintAddress)
+                    // console.log(new PublicKey(mintAddress));
+
+                    // const mintAddressPubKey = new PublicKey("EpfymMZdtoSJ3jPG3j85SdPSKPL1vMirrjqUEHvQTsjY");
+                    try {
+                        const mintpublicKey = new PublicKey(mintAddress);
+
+                        const nft = await metaplex.nfts().findByMint({ mintAddress: mintpublicKey });
+                        console.log(nft);
+
+                        // console.log(nft.json.name);
+                        console.log(nft.name);
+                        let tokenAccount = {
+                            tokenAccountNo: tokenAccountNo,
+                            mintAddress: mintAddress,
+                            tokenBalance: tokenBalance,
+                            name: nft.name,
+                            symbol: nft.symbol,
+                            uri: nft.uri
+                        }
+
+                        setTokenAccounts(prevState => ([...prevState, tokenAccount]));
+                    } catch (error) {
+                        console.log(error)
                     }
 
+
                 })
-                console.log(allTokenAccounts);
-                setTokenAccounts(allTokenAccounts);
+
+                console.log("-----------------------------------")
+
+                console.log(tokenAccounts);
                 console.log(`Found ${accounts.length} token account(s) for wallet ${wallet}.`);
                 accounts.forEach((account, i) => {
                     //Parse the account data
@@ -121,6 +150,18 @@ export const SendTransaction: FC = () => {
         if (!publicKey) {
             notify({ type: 'error', message: `Wallet not connected!` });
             console.log('error', `Send Transaction: Wallet not connected!`);
+            return;
+        }
+
+        else if (!formData.selectedTokenAccount) {
+            notify({ type: 'error', message: `Select a Token!` });
+            console.log('error', `Send Transaction: Select a Token!`);
+            return;
+        }
+
+        else if (formData.amount > JSON.parse(formData.selectedTokenAccount).tokenBalance) {
+            notify({ type: 'error', message: `Insufficient Token balance!` });
+            console.log('error', `Send Transaction: Insufficient Token balance!`);
             return;
         }
 
@@ -186,25 +227,20 @@ export const SendTransaction: FC = () => {
                 </label>
                 <label htmlFor="amount">
                     Amount
-                    <input type="text" name="amount" value={formData.amount} onChange={handleChange} />
+                    <input type="number" min="1" name="amount" value={formData.amount} onChange={handleChange} />
                 </label>
                 <label htmlFor="selectedTokenAccount">
-                    Choose the token you want to send
+                    Choose token
                     <select
                         name="selectedTokenAccount"
                         id="selectedTokenAccount"
                         value={formData.selectedTokenAccount}
                         onChange={handleChange}
                     >
-
+                        <option value="">Select a token</option>
                         {tokenAccounts.map((tokenAccount, i) => {
                             return (
-                                <option key={i + 1} value={JSON.stringify(tokenAccount)} >{tokenAccount.tokenAccountNo}</option>
-                            )
-                        })}
-                        {tokenAccounts.map((tokenAccount, i) => {
-                            return (
-                                <option key={i + 1} value={JSON.stringify(tokenAccount)} >{tokenAccount.tokenAccountNo}</option>
+                                <option key={i + 1} value={JSON.stringify(tokenAccount)} >{tokenAccount.name}</option>
                             )
                         })}
 
@@ -214,7 +250,7 @@ export const SendTransaction: FC = () => {
                     Balance
                     <input type="text" value={JSON.parse(formData.selectedTokenAccount).tokenBalance} readOnly />
                 </label>}
-                <input type="submit" value="submit" />
+                <input type="submit" value="submit" id="submit" />
             </form>
         </div>
     );
