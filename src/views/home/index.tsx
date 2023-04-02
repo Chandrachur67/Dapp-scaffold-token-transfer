@@ -17,7 +17,7 @@ import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
 export const HomeView: FC = ({ }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
-  
+
   const balance = useUserSOLBalanceStore((s) => s.balance)
   const { getUserSOLBalance } = useUserSOLBalanceStore()
 
@@ -35,7 +35,7 @@ export const HomeView: FC = ({ }) => {
         <h1 className="text-center text-5xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
           Scaffold Lite <span className='text-sm font-normal align-top text-slate-700'>v{pkg.version}</span>
         </h1>
-        <h4 className="md:w-full text-center text-slate-300 my-2">
+        {/* <h4 className="md:w-full text-center text-slate-300 my-2">
           <p>Simply the fastest way to get started.</p>
           Next.js, tailwind, wallet, web3.js, and more.
         </h4>
@@ -47,9 +47,9 @@ export const HomeView: FC = ({ }) => {
         <div className="text-center">
           <RequestAirdrop />
           {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>}
-          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
-          <SendTransaction />
-        </div>
+          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>} */}
+        <SendTransaction />
+        {/* </div> */}
       </div>
     </div>
   );

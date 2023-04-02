@@ -24,3 +24,27 @@ a {
   background-color: #707070;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin: 100px auto;
+  /* background-color: #4a4a4a; */
+  padding: 50px 30px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  background: rgb(74, 12, 153);
+  background: linear-gradient(7deg, rgba(74, 12, 153, 1) 20%, rgba(84, 151, 213, 1) 73%, rgba(5, 201, 118, 1) 100%);
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  color: black
+}
+
+form input,
+select {
+  color: black
+}

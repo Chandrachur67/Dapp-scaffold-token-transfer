@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.5",
+    "@metaplex-foundation/js": "^0.18.3",
+    "@metaplex-foundation/mpl-token-metadata": "^2.9.1",
+    "@solana/spl-token": "^0.3.7",
     "@solana/wallet-adapter-base": "^0.9.3",
     "@solana/wallet-adapter-react": "^0.15.3",
     "@solana/wallet-adapter-react-ui": "^0.9.5",
-    "@solana/wallet-adapter-wallets": "^0.15.3",
+    "@solana/wallet-adapter-wallets": "^0.15.5",
     "@solana/web3.js": "^1.31.0",
     "@tailwindcss/typography": "^0.5.0",
     "daisyui": "^1.24.3",
@@ -24,6 +27,7 @@
     "next-transpile-modules": "^9.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "reflect-metadata": "^0.1.13",
     "zustand": "^3.6.9"
   },
   "devDependencies": {
